@@ -1,153 +1,82 @@
 import { useState } from "react";
+import "./App.css";
+import { evaluate } from "mathjs";
 
 function App() {
-  const [valor1, setValor1] = useState(0);
-  const [valor2, setValor2] = useState(0);
-  const [valor3, setValor3] = useState(0);
-  const [altura, setAltura] = useState(0);
-  const [peso, setPeso] = useState(0);
-  const [resultado, setResultado] = useState(null);
-  const [resultadoImc, setResultadoImc] = useState(null);
+  const [display, setDisplay] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
 
-  const somar = () => {
-    setResultado(valor1 + valor2 + valor3);
+  const append = (value) => {
+    const operators = ["/", "*", "-", "+"];
+    const lastChar = display.slice(-1);
 
-    if (setResultado === null) {
-      alert("Resultado nulo, tente novamente!");
-    }
-  };
-
-  const subtrair = () => {
-    setResultado(valor1 - valor2 - valor3);
-
-    if (setResultado === null) {
-      alert("Resultado nulo, tente novamente!");
-    }
-  };
-
-  const multiplicar = () => {
-    if (valor3 === null || valor3 === 0) {
-      setResultado(valor1 * valor2);
-    } else {
-      setResultado(valor1 * valor2 * valor3);
-    }
-
-    if (setResultado === null) {
-      alert("Resultado nulo, tente novamente!");
-    }
-  };
-
-  const dividir = () => {
-    if (valor3 === null || valor3 === 0) {
-      setResultado(valor1 / valor2);
-    } else {
-      setResultado(valor1 / valor2 / valor3);
-    }
-
-    if (setResultado === null) {
-      alert("Resultado nulo, tente novamente!");
-    }
-  };
-
-  const imc = () => {
-    if (peso <= 0 || altura <= 0) {
-      alert("Peso ou altura inválidos!");
+    // Previne operadores consecutivos
+    if (operators.includes(value) && operators.includes(lastChar)) {
       return;
     }
 
-    const alturaMetros = altura / 100;
-    const imcCalculado = peso / (alturaMetros * alturaMetros);
-    setResultadoImc(imcCalculado);
+    // Impede que a expressão comece com um operador (exceto o sinal de menos)
+    if (display === "" && operators.includes(value) && value !== "-") {
+      return;
+    }
+    setDisplay((prev) => prev + value);
   };
 
-  const getImcStatus = (imc) => {
-    if (imc < 18.5) return "Abaixo do peso";
-    if (imc < 24.9) return "Peso normal";
-    if (imc < 29.9) return "Sobrepeso";
-    return "Obesidade";
+  const clearDisplay = () => setDisplay("");
+
+  const calculate = () => {
+    // Evita erro ao tentar calcular uma string vazia ou apenas um operador
+    if (!display || (isNaN(display.slice(-1)) && display.slice(-1) !== ".")) {
+      return;
+    }
+    try {
+      // Avalia a expressão matemática
+      const result = evaluate(display);
+      setDisplay(result.toString());
+    } catch {
+      setDisplay("Erro");
+    }
   };
+
+  const toggleDarkMode = () => setDarkMode((prev) => !prev);
 
   return (
-    <div style={{ padding: "2rem 2rem 2rem 1rem", fontFamily: "Arial" }}>
-      <h2>Calcular valores:</h2>
-      <input
-        type="number"
-        placeholder="Valor 1..."
-        onChange={(e) => setValor1(Number(e.target.value))}
-      />
-
-      <span style={{ margin: "0 10px" }}></span>
-
-      <input
-        type="number"
-        placeholder="Valor 2..."
-        onChange={(e) => setValor2(Number(e.target.value))}
-      />
-
-      <span style={{ margin: "0 10px" }}></span>
-
-      <input
-        type="number"
-        placeholder="Valor 3..."
-        onChange={(e) => setValor3(Number(e.target.value))}
-      />
-
-      <button onClick={somar} style={{ marginTop: "20px", marginLeft: "10px" }}>
-        Somar
+    <div className={`calculator ${darkMode ? "dark" : "light"}`}>
+      <button className="toggle-theme" onClick={toggleDarkMode}>
+        {darkMode ? "Modo Claro" : "Modo Escuro"}
       </button>
 
-      <button
-        onClick={subtrair}
-        style={{ marginTop: "20px", marginLeft: "10px" }}
-      >
-        Subtrair
-      </button>
+      <input type="text" value={display} disabled readOnly />
 
-      <button
-        onClick={multiplicar}
-        style={{ marginTop: "20px", marginLeft: "10px" }}
-      >
-        Multiplicar
-      </button>
+      <div className="buttons">
+        <button onClick={clearDisplay}>C</button>
+        <button onClick={() => append("/")}>/</button>
+        <button onClick={() => append("*")}>*</button>
+        <button onClick={() => append("-")}>-</button>
 
-      <button
-        onClick={dividir}
-        style={{ marginTop: "20px", marginLeft: "10px" }}
-      >
-        Dividir
-      </button>
+        <button onClick={() => append("7")}>7</button>
+        <button onClick={() => append("8")}>8</button>
+        <button onClick={() => append("9")}>9</button>
+        <button onClick={() => append("+")} style={{ gridRow: "span 2" }}>
+          +
+        </button>
 
-      {resultado !== null && (
-        <h2 style={{ marginTop: "20px" }}>Resultado: {resultado.toFixed(2)}</h2>
-      )}
+        <button onClick={() => append("4")}>4</button>
+        <button onClick={() => append("5")}>5</button>
+        <button onClick={() => append("6")}>6</button>
 
-      <br />
-      <br />
-      <h3>Calcular IMC:</h3>
+        <button onClick={() => append("1")}>1</button>
+        <button onClick={() => append("2")}>2</button>
+        <button onClick={() => append("3")}>3</button>
 
-      <input
-        type="number"
-        placeholder="Peso (kg)"
-        onChange={(e) => setPeso(Number(e.target.value))}
-      />
-
-      <span style={{ margin: "0 10px" }}></span>
-
-      <input
-        type="number"
-        placeholder="Altura (cm)"
-        onChange={(e) => setAltura(Number(e.target.value))}
-      />
-
-      <button onClick={imc} style={{ marginTop: "20px", marginLeft: "10px" }}>
-        Calcular
-      </button>
-
-      {resultadoImc !== null && (
-        <h2 style={{ marginTop: "20px" }}>
-          IMC: {resultadoImc.toFixed(2)} - {getImcStatus(resultadoImc)}
-        </h2>
-      )}
+        <button onClick={() => append("0")} className="zero">
+          0
+        </button>
+        <button onClick={() => append(".")}>.</button>
+        <button onClick={calculate} className="equals">
+          =
+        </button>
+      </div>
     </div>
   );
 }
