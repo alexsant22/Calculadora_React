@@ -1,153 +1,118 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import "./App.css";
 
 function App() {
-  const [valor1, setValor1] = useState(0);
-  const [valor2, setValor2] = useState(0);
-  const [valor3, setValor3] = useState(0);
-  const [altura, setAltura] = useState(0);
-  const [peso, setPeso] = useState(0);
-  const [resultado, setResultado] = useState(null);
-  const [resultadoImc, setResultadoImc] = useState(null);
+  const [display, setDisplay] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
 
-  const somar = () => {
-    setResultado(valor1 + valor2 + valor3);
-
-    if (setResultado === null) {
-      alert("Resultado nulo, tente novamente!");
+  // Função para avaliar expressões matemáticas de forma segura
+  const evaluate = (expression) => {
+    try {
+      // Verifica se há uma divisão por zero
+      if (expression.includes("/0") && !expression.includes("/0.")) {
+        return "Não pode dividir por zero";
+      }
+      
+      // Substitui a função eval por uma avaliação mais segura
+      return Function(`'use strict'; return (${expression})`)();
+    } catch {
+      return "Erro";
     }
   };
 
-  const subtrair = () => {
-    setResultado(valor1 - valor2 - valor3);
+  const append = (value) => setDisplay((prev) => prev + value);
+  const clearDisplay = () => setDisplay("");
+  
+  const calculate = () => {
+    const result = evaluate(display);
+    setDisplay(result.toString());
+  };
 
-    if (setResultado === null) {
-      alert("Resultado nulo, tente novamente!");
+  const handlePercentage = () => {
+    try {
+      const value = parseFloat(display);
+      if (!isNaN(value)) {
+        setDisplay((value / 100).toString());
+      }
+    } catch {
+      setDisplay("Erro");
     }
   };
 
-  const multiplicar = () => {
-    if (valor3 === null || valor3 === 0) {
-      setResultado(valor1 * valor2);
-    } else {
-      setResultado(valor1 * valor2 * valor3);
-    }
+  const toggleDarkMode = () => setDarkMode((prev) => !prev);
 
-    if (setResultado === null) {
-      alert("Resultado nulo, tente novamente!");
-    }
-  };
+  // Efeito para lidar com eventos do teclado
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const key = e.key;
+      
+      // Mapeamento de teclas para funções
+      const keyMap = {
+        '0': '0', '1': '1', '2': '2', '3': '3', '4': '4',
+        '5': '5', '6': '6', '7': '7', '8': '8', '9': '9',
+        '+': '+', '-': '-', '*': '*', '/': '/', '.': '.',
+        '%': handlePercentage,
+        'Enter': calculate,
+        '=': calculate,
+        'Escape': clearDisplay,
+        'Backspace': () => setDisplay(prev => prev.slice(0, -1))
+      };
 
-  const dividir = () => {
-    if (valor3 === null || valor3 === 0) {
-      setResultado(valor1 / valor2);
-    } else {
-      setResultado(valor1 / valor2 / valor3);
-    }
+      if (key in keyMap) {
+        e.preventDefault();
+        const action = keyMap[key];
+        
+        if (typeof action === 'function') {
+          action();
+        } else {
+          append(action);
+        }
+      }
+    };
 
-    if (setResultado === null) {
-      alert("Resultado nulo, tente novamente!");
-    }
-  };
-
-  const imc = () => {
-    if (peso <= 0 || altura <= 0) {
-      alert("Peso ou altura inválidos!");
-      return;
-    }
-
-    const alturaMetros = altura / 100;
-    const imcCalculado = peso / (alturaMetros * alturaMetros);
-    setResultadoImc(imcCalculado);
-  };
-
-  const getImcStatus = (imc) => {
-    if (imc < 18.5) return "Abaixo do peso";
-    if (imc < 24.9) return "Peso normal";
-    if (imc < 29.9) return "Sobrepeso";
-    return "Obesidade";
-  };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [display]);
 
   return (
-    <div style={{ padding: "2rem 2rem 2rem 1rem", fontFamily: "Arial" }}>
-      <h2>Calcular valores:</h2>
-      <input
-        type="number"
-        placeholder="Valor 1..."
-        onChange={(e) => setValor1(Number(e.target.value))}
-      />
-
-      <span style={{ margin: "0 10px" }}></span>
-
-      <input
-        type="number"
-        placeholder="Valor 2..."
-        onChange={(e) => setValor2(Number(e.target.value))}
-      />
-
-      <span style={{ margin: "0 10px" }}></span>
-
-      <input
-        type="number"
-        placeholder="Valor 3..."
-        onChange={(e) => setValor3(Number(e.target.value))}
-      />
-
-      <button onClick={somar} style={{ marginTop: "20px", marginLeft: "10px" }}>
-        Somar
+    <div className={`calculator ${darkMode ? "dark" : "light"}`}>
+      <button className="toggle-theme" onClick={toggleDarkMode}>
+        {darkMode ? "Modo Claro" : "Modo Escuro"}
       </button>
 
-      <button
-        onClick={subtrair}
-        style={{ marginTop: "20px", marginLeft: "10px" }}
-      >
-        Subtrair
-      </button>
+      <div className="input-container">
+        <input 
+          type="text" 
+          value={display} 
+          disabled 
+          className="calculator-input"
+        />
+      </div>
 
-      <button
-        onClick={multiplicar}
-        style={{ marginTop: "20px", marginLeft: "10px" }}
-      >
-        Multiplicar
-      </button>
+      <div className="buttons">
+        <button onClick={clearDisplay}>C</button>
+        <button onClick={() => append("/")}>/</button>
+        <button onClick={() => append("*")}>*</button>
+        <button onClick={() => append("-")}>-</button>
 
-      <button
-        onClick={dividir}
-        style={{ marginTop: "20px", marginLeft: "10px" }}
-      >
-        Dividir
-      </button>
+        <button onClick={() => append("7")}>7</button>
+        <button onClick={() => append("8")}>8</button>
+        <button onClick={() => append("9")}>9</button>
+        <button onClick={() => append("+")}>+</button>
 
-      {resultado !== null && (
-        <h2 style={{ marginTop: "20px" }}>Resultado: {resultado.toFixed(2)}</h2>
-      )}
+        <button onClick={() => append("4")}>4</button>
+        <button onClick={() => append("5")}>5</button>
+        <button onClick={() => append("6")}>6</button>
+        <button onClick={calculate}>=</button>
 
-      <br />
-      <br />
-      <h3>Calcular IMC:</h3>
+        <button onClick={() => append("1")}>1</button>
+        <button onClick={() => append("2")}>2</button>
+        <button onClick={() => append("3")}>3</button>
+        <button onClick={handlePercentage}>%</button>
 
-      <input
-        type="number"
-        placeholder="Peso (kg)"
-        onChange={(e) => setPeso(Number(e.target.value))}
-      />
-
-      <span style={{ margin: "0 10px" }}></span>
-
-      <input
-        type="number"
-        placeholder="Altura (cm)"
-        onChange={(e) => setAltura(Number(e.target.value))}
-      />
-
-      <button onClick={imc} style={{ marginTop: "20px", marginLeft: "10px" }}>
-        Calcular
-      </button>
-
-      {resultadoImc !== null && (
-        <h2 style={{ marginTop: "20px" }}>
-          IMC: {resultadoImc.toFixed(2)} - {getImcStatus(resultadoImc)}
-        </h2>
-      )}
+        <button onClick={() => append("0")}>0</button>
+        <button onClick={() => append(".")}>.</button>
+      </div>
     </div>
   );
 }

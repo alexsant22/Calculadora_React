@@ -1,42 +1,160 @@
+/* --- Centralização da calculadora na tela --- */
+html,
+body,
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* --- Container da calculadora --- */
+.calculator {
+  max-width: 320px;
+  width: 100%;
+  padding: 20px;
+  border-radius: 10px;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* --- Container do input --- */
+.input-container {
+  display: flex;
+  justify-content: center;
+}
+
+/* --- Input da calculadora --- */
+.calculator-input {
+  width: 100%;
+  font-size: 1.8rem;
+  padding: 12px;
+  border-radius: 6px;
+  outline: none;
+  box-sizing: border-box;
+  user-select: none;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* --- Botões --- */
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.buttons button {
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 15px 0;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  border: none;
+}
+
+/* --- Modo claro --- */
+.calculator.light {
+  background-color: #f9f9f9;
+  color: #222;
+}
+
+.calculator.light .calculator-input {
+  background-color: #fff;
+  color: #222;
+  border: 1px solid #ccc;
+}
+
+.calculator.light .buttons button {
+  background-color: #eee;
+  color: #222;
+  border: 1px solid #ccc;
+}
+
+.calculator.light .buttons button:hover {
+  background-color: #ddd;
+}
+
+.calculator.light .toggle-theme {
+  background-color: #ddd;
+  color: #222;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* --- Modo escuro --- */
+.calculator.dark {
+  background-color: #222;
+  color: #eee;
+}
+
+.calculator.dark .calculator-input {
+  background-color: #333;
+  color: #eee;
+  border: 1px solid #555;
+}
+
+.calculator.dark .buttons button {
+  background-color: #444;
+  color: #eee;
+  border: 1px solid #555;
+}
+
+.calculator.dark .buttons button:hover {
+  background-color: #555;
+}
+
+.calculator.dark .toggle-theme {
+  background-color: #555;
+  color: #eee;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* --- Responsividade --- */
+@media (max-width: 400px) {
+  .calculator {
+    padding: 15px;
   }
-  to {
-    transform: rotate(360deg);
+  
+  .calculator-input {
+    font-size: 1.5rem;
+    padding: 10px;
+  }
+  
+  .buttons button {
+    padding: 12px 0;
+    font-size: 0.9rem;
+  }
+  
+  .toggle-theme {
+    padding: 8px 12px;
+    font-size: 0.9rem;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+@media (max-width: 300px) {
+  .buttons button {
+    padding: 10px 0;
+    font-size: 0.8rem;
   }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
