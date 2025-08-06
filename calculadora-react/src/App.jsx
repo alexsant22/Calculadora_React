@@ -7,10 +7,28 @@ function App() {
 
   const append = (value) => setDisplay((prev) => prev + value);
   const clearDisplay = () => setDisplay("");
+  
   const calculate = () => {
     try {
-      // Avalia a expressão matemática
-      setDisplay(eval(display).toString());
+      // Verifica se há uma divisão por zero
+      if (display.includes("/0") && !display.includes("/0.")) {
+        setDisplay("Não pode dividir por zero");
+        return;
+      }
+      
+      const result = eval(display).toString();
+      setDisplay(result);
+    } catch {
+      setDisplay("Erro");
+    }
+  };
+
+  const handlePercentage = () => {
+    try {
+      const value = parseFloat(display);
+      if (!isNaN(value)) {
+        setDisplay((value / 100).toString());
+      }
     } catch {
       setDisplay("Erro");
     }
@@ -45,6 +63,8 @@ function App() {
         <button onClick={() => append("1")}>1</button>
         <button onClick={() => append("2")}>2</button>
         <button onClick={() => append("3")}>3</button>
+        <button onClick={handlePercentage}>%</button>
+
         <button onClick={() => append("0")}>0</button>
         <button onClick={() => append(".")}>.</button>
       </div>
