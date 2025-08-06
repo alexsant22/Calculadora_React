@@ -1,42 +1,119 @@
+/* --- Centralização da calculadora na tela --- */
+html,
+body,
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+#root {
+  display: flex;
+  justify-content: center; /* centraliza horizontalmente */
+  align-items: center; /* centraliza verticalmente */
+  min-height: 100vh;
+  /* Sem background-color aqui */
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* --- Container da calculadora --- */
+.calculator {
+  max-width: 320px;
+  width: 100%;
+  padding: 20px;
+  border-radius: 10px;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* --- Modo claro --- */
+.calculator.light {
+  background-color: #f9f9f9;
+  color: #222;
 }
 
-.card {
-  padding: 2em;
+.calculator.light input {
+  background-color: #fff;
+  color: #222;
+  border: 1px solid #ccc;
 }
 
-.read-the-docs {
-  color: #888;
+.calculator.light .buttons button {
+  background-color: #eee;
+  color: #222;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 6px 4px;
+  padding: 12px 18px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.calculator.light .buttons button:hover {
+  background-color: #ddd;
+}
+
+.calculator.light .toggle-theme {
+  background-color: #ddd;
+  color: #222;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* --- Modo escuro --- */
+.calculator.dark {
+  background-color: #222;
+  color: #eee;
+}
+
+.calculator.dark input {
+  background-color: #333;
+  color: #eee;
+  border: 1px solid #555;
+}
+
+.calculator.dark .buttons button {
+  background-color: #444;
+  color: #eee;
+  border: 1px solid #555;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 6px 4px;
+  padding: 12px 18px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.calculator.dark .buttons button:hover {
+  background-color: #555;
+}
+
+.calculator.dark .toggle-theme {
+  background-color: #555;
+  color: #eee;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* --- Input da calculadora --- */
+input[type="text"] {
+  width: 100%;
+  font-size: 1.8rem;
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  outline: none;
+  box-sizing: border-box;
+  user-select: none;
 }
