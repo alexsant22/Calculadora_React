@@ -25,18 +25,27 @@ body,
   font-family: Arial, sans-serif;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease, color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* --- Container do input --- */
+.input-container {
+  display: flex;
+  justify-content: center;
 }
 
 /* --- Input da calculadora --- */
-input[type="text"] {
+.calculator-input {
   width: 100%;
   font-size: 1.8rem;
   padding: 12px;
-  margin-bottom: 20px;
   border-radius: 6px;
   outline: none;
   box-sizing: border-box;
   user-select: none;
+  text-align: center;
 }
 
 /* --- Botões --- */
@@ -61,7 +70,7 @@ input[type="text"] {
   color: #222;
 }
 
-.calculator.light input {
+.calculator.light .calculator-input {
   background-color: #fff;
   color: #222;
   border: 1px solid #ccc;
@@ -83,7 +92,6 @@ input[type="text"] {
   border: none;
   padding: 10px 16px;
   border-radius: 6px;
-  margin-bottom: 15px;
   cursor: pointer;
   font-weight: bold;
   font-size: 1rem;
@@ -95,7 +103,7 @@ input[type="text"] {
   color: #eee;
 }
 
-.calculator.dark input {
+.calculator.dark .calculator-input {
   background-color: #333;
   color: #eee;
   border: 1px solid #555;
@@ -117,7 +125,6 @@ input[type="text"] {
   border: none;
   padding: 10px 16px;
   border-radius: 6px;
-  margin-bottom: 15px;
   cursor: pointer;
   font-weight: bold;
   font-size: 1rem;
@@ -128,17 +135,17 @@ input[type="text"] {
   .calculator {
     padding: 15px;
   }
-
-  input[type="text"] {
+  
+  .calculator-input {
     font-size: 1.5rem;
     padding: 10px;
   }
-
+  
   .buttons button {
     padding: 12px 0;
     font-size: 0.9rem;
   }
-
+  
   .toggle-theme {
     padding: 8px 12px;
     font-size: 0.9rem;

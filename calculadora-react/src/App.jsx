@@ -1,26 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
   const [display, setDisplay] = useState("");
   const [darkMode, setDarkMode] = useState(false);
 
+  // Função para avaliar expressões matemáticas de forma segura
+  const evaluate = (expression) => {
+    try {
+      // Verifica se há uma divisão por zero
+      if (expression.includes("/0") && !expression.includes("/0.")) {
+        return "Não pode dividir por zero";
+      }
+      
+      // Substitui a função eval por uma avaliação mais segura
+      return Function(`'use strict'; return (${expression})`)();
+    } catch {
+      return "Erro";
+    }
+  };
+
   const append = (value) => setDisplay((prev) => prev + value);
   const clearDisplay = () => setDisplay("");
   
   const calculate = () => {
-    try {
-      // Verifica se há uma divisão por zero
-      if (display.includes("/0") && !display.includes("/0.")) {
-        setDisplay("Não pode dividir por zero");
-        return;
-      }
-      
-      const result = eval(display).toString();
-      setDisplay(result);
-    } catch {
-      setDisplay("Erro");
-    }
+    const result = evaluate(display);
+    setDisplay(result.toString());
   };
 
   const handlePercentage = () => {
@@ -36,13 +41,53 @@ function App() {
 
   const toggleDarkMode = () => setDarkMode((prev) => !prev);
 
+  // Efeito para lidar com eventos do teclado
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const key = e.key;
+      
+      // Mapeamento de teclas para funções
+      const keyMap = {
+        '0': '0', '1': '1', '2': '2', '3': '3', '4': '4',
+        '5': '5', '6': '6', '7': '7', '8': '8', '9': '9',
+        '+': '+', '-': '-', '*': '*', '/': '/', '.': '.',
+        '%': handlePercentage,
+        'Enter': calculate,
+        '=': calculate,
+        'Escape': clearDisplay,
+        'Backspace': () => setDisplay(prev => prev.slice(0, -1))
+      };
+
+      if (key in keyMap) {
+        e.preventDefault();
+        const action = keyMap[key];
+        
+        if (typeof action === 'function') {
+          action();
+        } else {
+          append(action);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [display]);
+
   return (
     <div className={`calculator ${darkMode ? "dark" : "light"}`}>
       <button className="toggle-theme" onClick={toggleDarkMode}>
         {darkMode ? "Modo Claro" : "Modo Escuro"}
       </button>
 
-      <input type="text" value={display} disabled />
+      <div className="input-container">
+        <input 
+          type="text" 
+          value={display} 
+          disabled 
+          className="calculator-input"
+        />
+      </div>
 
       <div className="buttons">
         <button onClick={clearDisplay}>C</button>
